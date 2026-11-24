@@ -26,7 +26,7 @@
 		<ApplicationTitle>MyEmploylog</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.myemploylog</ApplicationId>
+		<ApplicationId>mu.ceb.myemploylog</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>

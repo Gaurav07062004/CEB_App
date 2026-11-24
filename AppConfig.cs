@@ -7,5 +7,5 @@ public static class AppConfig
     public const string TenantId = "";
 
     // Must match ApplicationId in MyEmploylog.csproj (used for the iOS redirect URI)
-    public const string BundleId = "com.companyname.myemploylog";
+    public const string BundleId = "mu.ceb.myemploylog";
 }
