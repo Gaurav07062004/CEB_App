@@ -42,7 +42,7 @@
             VerticalOptions="Center"
             Spacing="16">
             <Label
-                Text="MyEmploy"
+                Text="MyEmploylog"
                 FontSize="34"
                 FontAttributes="Bold"
                 HorizontalOptions="Center" />

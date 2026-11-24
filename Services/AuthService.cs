@@ -25,6 +25,9 @@ public class AuthService
         builder = builder
             .WithRedirectUri($"msauth.{AppConfig.BundleId}://auth")
             .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
+#elif WINDOWS || MACCATALYST
+        // Desktop: system browser returns to a loopback address
+        builder = builder.WithRedirectUri("http://localhost");
 #endif
         _pca = builder.Build();
     }
@@ -59,6 +62,12 @@ public class AuthService
 #if ANDROID
                 request = request.WithParentActivityOrWindow(
                     Microsoft.Maui.ApplicationModel.Platform.CurrentActivity);
+#elif WINDOWS
+                var window = Application.Current?.Windows.FirstOrDefault()?.Handler?.PlatformView
+                    as Microsoft.UI.Xaml.Window;
+                if (window is not null)
+                    request = request.WithParentActivityOrWindow(
+                        WinRT.Interop.WindowNative.GetWindowHandle(window));
 #endif
                 result = await request.ExecuteAsync();
             }

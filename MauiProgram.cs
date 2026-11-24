@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using MyEmploy.Pages;
+using MyEmploylog.Pages;
 using MyEmploylog.Services;
 
 namespace MyEmploylog;

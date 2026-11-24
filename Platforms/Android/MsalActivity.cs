@@ -7,8 +7,8 @@ namespace MyEmploylog;
 // Receives the redirect  msal<client-id>://auth  after Microsoft sign-in
 [Activity(Exported = true)]
 [IntentFilter(
-    [Intent.ActionView],
-    Categories = [Intent.CategoryBrowsable, Intent.CategoryDefault],
+    new[] { Intent.ActionView },
+    Categories = new[] { Intent.CategoryBrowsable, Intent.CategoryDefault },
     DataHost = "auth",
     DataScheme = "msal" + AppConfig.ClientId)]
 public class MsalActivity : BrowserTabActivity
