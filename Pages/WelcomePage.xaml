@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MyEmploylog.Pages.WelcomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Shell.NavBarIsVisible="False">
+
+    <Grid Padding="32">
+
+        <!-- While connecting to Microsoft -->
+        <ActivityIndicator
+            x:Name="Busy"
+            IsRunning="True"
+            VerticalOptions="Center"
+            HorizontalOptions="Center" />
+
+        <!-- After sign-in -->
+        <VerticalStackLayout
+            x:Name="WelcomePanel"
+            IsVisible="False"
+            VerticalOptions="Center"
+            Spacing="16">
+            <Label
+                Text="Welcome"
+                FontSize="34"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+            <Label x:Name="NameLabel" FontSize="22" HorizontalOptions="Center" />
+            <Label x:Name="EmailLabel" TextColor="Gray" HorizontalOptions="Center" />
+            <Button
+                Text="Sign out"
+                HeightRequest="50"
+                CornerRadius="8"
+                Margin="0,24,0,0"
+                Clicked="OnSignOutClicked" />
+        </VerticalStackLayout>
+
+        <!-- If the user closes the Microsoft screen or sign-in fails -->
+        <VerticalStackLayout
+            x:Name="SignInPanel"
+            IsVisible="False"
+            VerticalOptions="Center"
+            Spacing="16">
+            <Label
+                Text="MyEmploy"
+                FontSize="34"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                HorizontalTextAlignment="Center"
+                IsVisible="False" />
+            <Button
+                Text="Sign in with Microsoft"
+                HeightRequest="50"
+                CornerRadius="8"
+                Clicked="OnSignInClicked" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
