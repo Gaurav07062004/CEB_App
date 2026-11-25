@@ -6,7 +6,7 @@ public record UserInfo(string Name, string Email);
 
 /// <summary>
 /// Microsoft sign-in (authorization code + PKCE) using MSAL.
-/// The user types the password on Microsoft's own page.
+/// The user types the password on Microsoft's own page, shown inside the app.
 /// </summary>
 public class AuthService
 {
@@ -26,7 +26,7 @@ public class AuthService
             .WithRedirectUri($"msauth.{AppConfig.BundleId}://auth")
             .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
 #elif WINDOWS || MACCATALYST
-        // Desktop: system browser returns to a loopback address
+        // Desktop: the in-app sign-in page stops when Microsoft redirects here
         builder = builder.WithRedirectUri("http://localhost");
 #endif
         _pca = builder.Build();
@@ -59,15 +59,16 @@ public class AuthService
             {
                 var request = _pca.AcquireTokenInteractive(Scopes)
                     .WithPrompt(Prompt.SelectAccount);
+                // Show Microsoft's sign-in page inside the app, not in the browser
 #if ANDROID
-                request = request.WithParentActivityOrWindow(
-                    Microsoft.Maui.ApplicationModel.Platform.CurrentActivity);
-#elif WINDOWS
-                var window = Application.Current?.Windows.FirstOrDefault()?.Handler?.PlatformView
-                    as Microsoft.UI.Xaml.Window;
-                if (window is not null)
-                    request = request.WithParentActivityOrWindow(
-                        WinRT.Interop.WindowNative.GetWindowHandle(window));
+                request = request
+                    .WithUseEmbeddedWebView(true)
+                    .WithParentActivityOrWindow(
+                        Microsoft.Maui.ApplicationModel.Platform.CurrentActivity);
+#elif IOS
+                request = request.WithUseEmbeddedWebView(true);
+#elif WINDOWS || MACCATALYST
+                request = request.WithCustomWebUi(new InAppSignInWebUi());
 #endif
                 result = await request.ExecuteAsync();
             }
