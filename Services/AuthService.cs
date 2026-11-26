@@ -1,5 +1,5 @@
 using Microsoft.Identity.Client;
-
+using Microsoft.Identity.Client.Desktop;
 namespace MyEmploylog.Services;
 
 public record UserInfo(string Name, string Email);
@@ -25,9 +25,14 @@ public class AuthService
         builder = builder
             .WithRedirectUri($"msauth.{AppConfig.BundleId}://auth")
             .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
-#elif WINDOWS || MACCATALYST
-        // Desktop: system browser returns to a loopback address
-        builder = builder.WithRedirectUri("http://localhost");
+#elif WINDOWS
+        builder = builder
+            .WithRedirectUri("https://login.microsoftonline.com/common/oauth2/nativeclient")
+            .WithWindowsEmbeddedBrowserSupport();
+#elif MACCATALYST
+        builder = builder
+            .WithRedirectUri($"msauth.{AppConfig.BundleId}://auth")
+            .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
 #endif
         _pca = builder.Build();
     }
@@ -63,11 +68,13 @@ public class AuthService
                 request = request.WithParentActivityOrWindow(
                     Microsoft.Maui.ApplicationModel.Platform.CurrentActivity);
 #elif WINDOWS
-                var window = Application.Current?.Windows.FirstOrDefault()?.Handler?.PlatformView
-                    as Microsoft.UI.Xaml.Window;
-                if (window is not null)
-                    request = request.WithParentActivityOrWindow(
-                        WinRT.Interop.WindowNative.GetWindowHandle(window));
+request = request.WithUseEmbeddedWebView(true);
+
+var window = Application.Current?.Windows.FirstOrDefault()?.Handler?.PlatformView
+    as Microsoft.UI.Xaml.Window;
+if (window is not null)
+    request = request.WithParentActivityOrWindow(
+        WinRT.Interop.WindowNative.GetWindowHandle(window));
 #endif
                 result = await request.ExecuteAsync();
             }
