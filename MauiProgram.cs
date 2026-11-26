@@ -18,6 +18,7 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<CebApiService>();
         builder.Services.AddTransient<WelcomePage>();
 
 #if DEBUG

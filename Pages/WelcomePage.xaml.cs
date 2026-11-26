@@ -6,12 +6,14 @@ namespace MyEmploylog.Pages;
 public partial class WelcomePage : ContentPage
 {
     readonly AuthService _auth;
+    readonly CebApiService _api;
     bool _busy;
 
-    public WelcomePage(AuthService auth)
+    public WelcomePage(AuthService auth, CebApiService api)
     {
         InitializeComponent();
         _auth = auth;
+        _api = api;
     }
 
     // App opens: connect to Microsoft straight away
@@ -41,6 +43,8 @@ public partial class WelcomePage : ContentPage
             NameLabel.Text = user.Name;
             EmailLabel.Text = user.Email;
             Show(welcome: true);
+
+            await LoadDetailsAsync(user.Email);
         }
         catch (MsalException ex)
         {
@@ -54,10 +58,36 @@ public partial class WelcomePage : ContentPage
         }
     }
 
+    // After sign-in: ask the CEB web service about this user
+    async Task LoadDetailsAsync(string email)
+    {
+        DetailsBusy.IsVisible = DetailsBusy.IsRunning = true;
+        DetailsLabel.ClearValue(Label.TextColorProperty);
+        DetailsLabel.Text = "";
+
+        try
+        {
+            var json = await _api.GetUserJsonAsync(CebApiService.ToServiceUser(email));
+            DetailsLabel.Text = CebApiService.ToDisplayText(json);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            DetailsLabel.TextColor = Colors.Red;
+            DetailsLabel.Text = ex is TaskCanceledException
+                ? "The CEB web service did not answer in time. Are you on the CEB network?"
+                : $"Could not reach the CEB web service: {ex.Message}";
+        }
+        finally
+        {
+            DetailsBusy.IsVisible = DetailsBusy.IsRunning = false;
+        }
+    }
+
     async void OnSignOutClicked(object? sender, EventArgs e)
     {
         await _auth.SignOutAsync();
         ErrorLabel.IsVisible = false;
+        DetailsLabel.Text = "";
         Show(signIn: true);
     }
 

@@ -27,6 +27,15 @@
                 HorizontalOptions="Center" />
             <Label x:Name="NameLabel" FontSize="22" HorizontalOptions="Center" />
             <Label x:Name="EmailLabel" TextColor="Gray" HorizontalOptions="Center" />
+
+            <!-- Reply from the CEB web service -->
+            <Label
+                Text="Your details"
+                FontSize="18"
+                FontAttributes="Bold"
+                Margin="0,16,0,0" />
+            <ActivityIndicator x:Name="DetailsBusy" IsRunning="False" IsVisible="False" />
+            <Label x:Name="DetailsLabel" />
             <Button
                 Text="Sign out"
                 HeightRequest="50"

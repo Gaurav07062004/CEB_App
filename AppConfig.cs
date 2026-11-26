@@ -8,4 +8,7 @@ public static class AppConfig
 
     // Must match ApplicationId in MyEmploylog.csproj (used for the iOS redirect URI)
     public const string BundleId = "mu.ceb.myemploylog";
+
+    // CEB PMS utility web service (REST)
+    public const string ApiBaseUrl = "https://ceblfweb.ceb.mu/pmsutil/";
 }
